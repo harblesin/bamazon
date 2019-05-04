@@ -47,6 +47,7 @@ connection.connect(function (err) {
     #  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!`);
     startUp();
 
+    
     inquirer.prompt([{
             type: "input",
             name: "start",
@@ -93,18 +94,19 @@ function buy(price, stock){
         }
         else{
             var cost = res.amount * price;
+            var updated = stock - amount;
             // console.log(res.amount);
             // console.log(thisThing);
             console.log("You're total cost is: $" + cost);
-            deduct(amount, choice);
-            // exit();
+            deduct(updated, choice);
+            exit();
         }
     })
 }
 
-function deduct(amount, choice){
-    connection.query('UPDATE products SET' + --amount+ 'WHERE item_id = ?', choice, function(res){
-        console.log("We're down to " + stock + " of that product!");
+function deduct(updated, choice){
+    connection.query('UPDATE products SET stock_quantity = '+ updated +' WHERE item_id = ?', choice, function(res){
+        console.log("We're down to " + updated + " of that product!");
     } 
     )
 }
