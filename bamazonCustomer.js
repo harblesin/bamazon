@@ -3,8 +3,10 @@
 var mysql = require('mysql');
 var inquirer = require('inquirer');
 var spacer = '========================================================';
+var bf = " | ";
 var choice;
 var stock;
+var dataList;
 
 //establishing a connection to my hosted connection for my database of mySQL workbench
 var connection = mysql.createConnection({
@@ -90,7 +92,6 @@ function pickItem() {
             //to grab specified values for use later.
             choice = ans.start;
             connection.query('SELECT * FROM products WHERE item_id = ? ORDER BY item_id', choice, function (err, results) {
-                
                 if (err) {
                     console.log(err);
                     return;
@@ -98,7 +99,7 @@ function pickItem() {
 
                 //A validation check, if they choose a number not in the database, it restarts,
                 //prompting again.
-                else if(choice > 10 || choice < 1){
+                else if(choice > dataList || choice < 1){
                     
                 console.log(spacer);
                 console.log("No item exists with the Item ID!\n");
@@ -167,16 +168,17 @@ function displayItems(){
 
     console.log('Here is a list of the available products!');
     connection.query('SELECT * FROM products', function (err, results, fields) {
+        dataList = results.length;
         if (err) {
             console.log(err);
         }
         for (var i = 0; i < results.length; i++) {
             console.log(spacer);
-            console.log('Item #: ' + results[i].item_id + 
-                '\nProduct: ' + results[i].product_name +
-                '\nDepartment: ' + results[i].department_name + 
-                '\nPrice: ' + results[i].price + 
-                "\nStock: "+ results[i].stock_quantity);
+            console.log('Item #: ' + results[i].item_id + bf +
+                'Product: ' + results[i].product_name + bf +
+                'Department: ' + results[i].department_name + bf + 
+                'Price: ' + results[i].price + bf +
+                "Stock: "+ results[i].stock_quantity);
             console.log(spacer);
         }
         pickItem();
